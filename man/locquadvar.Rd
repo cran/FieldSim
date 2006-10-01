@@ -50,22 +50,14 @@ Annales Institut Henri Poincaré, Prob. Stat., *40* 259-277.
 library(FieldSim)
 
 #Field simulation
-F<-function(x){
-H1<-(0.4*x[1]+0.5)
-H2<-(0.4*x[3]+0.5)
-out<-list(H1=H1,H2=H2,H=(H1+H2)/2)
-return(out)
+F<-function(y){0.4*y+0.5}
+
+R<-function(x,Fun=F){
+H1<-Fun(x[1])
+H2<-Fun(x[3])
+alpha<-1/2*(H1+H2)
+C2D(alpha)^2/(2*C2D(H1)*C2D(H2))*((x[1]^2+x[2]^2)^(alpha)+(x[3]^2+x[4]^2)^(alpha)-((x[1]-x[3])^2+(x[2]-x[4])^2)^(alpha))
 }
-
-R<-function(x){
-a<-F(x)
-alpha<-a$H
-alpha1<-a$H1
-alpha2<-a$H2
-
-C2D(alpha)^2/(2*C2D(alpha1)*C2D(alpha2))*((x[1]^2+x[2]^2)^(alpha)+(x[3]^2+x[4]^2)^(alpha)-((x[1]-x[3])^2+(x[2]-x[4])^2)^(alpha))
-}
-
 res <- fieldsim(R,Elevel=1,Rlevel=5,nbNeighbor=4)
 
 # Estimation

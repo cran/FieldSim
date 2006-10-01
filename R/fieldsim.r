@@ -16,7 +16,7 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-fieldsim <- function(R,Elevel=1,Rlevel=5,nbNeighbor=4){
+fieldsim <- function(S,Elevel=1,Rlevel=5,nbNeighbor=4){
 
 ##    INPUT VARIABLES
 #########################
@@ -48,7 +48,7 @@ fieldsim <- function(R,Elevel=1,Rlevel=5,nbNeighbor=4){
 ##  TEST ON INPUT VARIABLES
 ##############################
 
-if (is.function(R)==FALSE){
+if (is.function(S)==FALSE){
  stop("Message from fieldsim.R: R is not of valid type")}
  
 if ((is.numeric(Elevel)==FALSE)||(round(Elevel)-Elevel!=0)||(Elevel<0)){
@@ -63,7 +63,7 @@ if ((is.numeric(nbNeighbor)==FALSE)||(round(nbNeighbor)-nbNeighbor!=0)||(nbNeigh
 if (nbNeighbor>(2^(Elevel)+1)^2){
  stop("Message from fieldsim.R: nbNeighbor is too large or Elevel is to small")}
 
-
+R<-function(x){S(x)}
 
 #-----------------------------------------------------
 #------Accurate simulation step for j<Elevel    ------
