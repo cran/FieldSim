@@ -33,7 +33,7 @@ Holder index of a Gaussian process. Annales Institut Henri Poincaré *33* 407-436
 }
 
 \author{
-  Alexandre Brouste (\url{http://ljk.imag.fr/membres/Alexandre.Brouste})
+  Alexandre Brouste (\url{http://subaru.univ-lemans.fr/sciences/statist/pages_persos/Brouste/})
    and
   Sophie Lambert-Lacroix (\url{http://ljk.imag.fr/membres/Sophie.Lambert}).
 }
@@ -49,6 +49,4 @@ library(FieldSim)
 res <- midpoint(H=0.3,nblevel=8)
 # Estimation
 quadvar(Z=res$Z)
-
 }
-\keyword{}

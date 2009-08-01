@@ -1,2 +1,2 @@
 useDynLib(FieldSim)
-export(fieldsim,midpoint,quadvar,C2D,locquadvar,H.test)
+export(fieldsim, midpoint,quadvar,C2D,locquadvar,H.test,spheresim,spheresimgrid,hypersim,hypersimgrid,printsphere,printhyper)

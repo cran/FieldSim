@@ -13,7 +13,7 @@ Brouste et al. (2007) Section 3.2).}
 \value{The value of the constant}
 
 \author{
-  Alexandre Brouste (\url{http://ljk.imag.fr/membres/Alexandre.Brouste})
+  Alexandre Brouste (\url{http://subaru.univ-lemans.fr/sciences/statist/pages_persos/Brouste/})
    and
   Sophie Lambert-Lacroix (\url{http://ljk.imag.fr/membres/Sophie.Lambert}).
 }
@@ -30,4 +30,3 @@ library(FieldSim)
 H<-0.3
 C2D(H)
 }
-\keyword{}

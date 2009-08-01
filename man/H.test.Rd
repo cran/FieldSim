@@ -16,8 +16,6 @@ So \code{Z}[i,j] is the value of the process at the point \eqn{((i-1)2^{-J},(j-1
           '"less"'.}
   \item{conf.level}{confidence level of the interval}
   }
-}
-
 \description{ The function \code{H.test} performs the test "the Hurst parameter of Z is 
 equal to H" against the alternative hypothesis.}
 \details{The test is build using the asymptotic distribution of the quadratic variations 
@@ -34,7 +32,7 @@ given in Brouste et al. (2006)}
    On Gaussian random fields simulations.
 }
 
-\author{Alexandre Brouste (\url{http://ljk.imag.fr/membres/Alexandre.Brouste}) 
+\author{Alexandre Brouste (\url{http://subaru.univ-lemans.fr/sciences/statist/pages_persos/Brouste/}) 
 and Sophie Lambert-Lacroix (\url{http://ljk.imag.fr/membres/Sophie.Lambert}).}
 
 \seealso{\code{\link{fieldsim}}, \code{\link{midpoint}}.}
@@ -49,4 +47,3 @@ res <- midpoint(H=0.3,nblevel=8)
 # Test "H=0.3" against "H!=3"
 H.test(res$Z,H=0.3)
 }
-\keyword{}

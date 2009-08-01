@@ -2,16 +2,16 @@
 \name{fieldsim}
 \alias{fieldsim}
 
-\title{Random field simulation by the FieldSim method}
+\title{Random field simulation by the fieldsim method}
 \usage{fieldsim(S,Elevel=1,Rlevel=5,nbNeighbor=4)}
 
 \arguments{
   \item{S}{a covariance function (defined on \eqn{[0,1]^4}) 
-  of a Random field to simulate.}
+  	of a Random field to simulate.}
   \item{Elevel}{a positive integer. \eqn{\code{Elevel}} is the
-level associated with the regular space discretization for the first 
-step of the algorithm (Accurate simulation step). The 
-regular space discretization is of the following form: 
+	level associated with the regular space discretization for the first 
+	step of the algorithm (Accurate simulation step). The 
+	regular space discretization is of the following form: 
 \eqn{[[0:2^{\code{Elevel}}]/2^{\code{Elevel}}]^2}.}
   \item{Rlevel}{a positive integer. \eqn{\code{Elevel}+\code{Rlevel}} is the
 level associated with the regular space discretization for the second 
@@ -50,41 +50,34 @@ procedure described in Brouste et al. (2007).
 \references{A. Brouste, J. Istas and S. Lambert-Lacroix (2007). On Gaussian random 
 fields simulations.}
 
-\author{Alexandre Brouste (\url{http://ljk.imag.fr/membres/Alexandre.Brouste}) and
+\author{Alexandre Brouste (\url{http://subaru.univ-lemans.fr/sciences/statist/pages_persos/Brouste/}) and
  Sophie Lambert-Lacroix (\url{http://ljk.imag.fr/membres/Sophie.Lambert}).}
 
-\seealso{\code{\link{quadvar}}.}
+\seealso{\code{\link{quadvar}},\code{\link{spheresim}},\code{\link{hypersim}}.}
 
 \examples{
-# load FieldSim library
+# Load FieldSim library
 library(FieldSim)
 
-#Example 1: Fractional Brownian Field
+# Example 1: Fractional Brownian Field
 R<-function(x,H=0.9){1/2*((x[1]^2+x[2]^2)^(H)+(x[3]^2+x[4]^2)^(H)-((x[1]-x[3])^2+(x[2]-x[4])^2)^(H))}
 res<- fieldsim(R,Elevel=1,Rlevel=5,nbNeighbor=4)
-
-# Plot 
 x <- res$Zrow
 y <- res$Zcol
 z <- res$Z
 persp(x, y, z, theta = 30, phi = 30, expand = 0.5, col = "lightblue")
 
-#Example 1: Multifractional Brownian Field
-
+# Example 2: Multifractional Brownian Field
 F<-function(y){0.4*y+0.5}
-
 R<-function(x,Fun=F){
 H1<-Fun(x[1])
 H2<-Fun(x[3])
 alpha<-1/2*(H1+H2)
 C2D(alpha)^2/(2*C2D(H1)*C2D(H2))*((x[1]^2+x[2]^2)^(alpha)+(x[3]^2+x[4]^2)^(alpha)-((x[1]-x[3])^2+(x[2]-x[4])^2)^(alpha))
 }
-
 res<- fieldsim(R,Elevel=1,Rlevel=5,nbNeighbor=4)
-# Plot 
 x <- res$Zrow
 y <- res$Zcol
 z <- res$Z
 persp(x, y, z, theta = 30, phi = 30, expand = 0.5, col = "lightblue")
 }
-\keyword{}

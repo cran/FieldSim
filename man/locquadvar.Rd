@@ -40,7 +40,7 @@ the multifractional function at point \code{t}.}
 Annales Institut Henri Poincaré, Prob. Stat., *40* 259-277.
 }
 
-\author{Alexandre Brouste (\url{http://ljk.imag.fr/membres/Alexandre.Brouste}) and
+\author{Alexandre Brouste (\url{http://subaru.univ-lemans.fr/sciences/statist/pages_persos/Brouste/}) and
   Sophie Lambert-Lacroix (\url{http://ljk.imag.fr/membres/Sophie.Lambert}).}
 
 \seealso{\code{\link{fieldsim}}.}
@@ -63,4 +63,3 @@ res <- fieldsim(R,Elevel=1,Rlevel=5,nbNeighbor=4)
 # Estimation
 locquadvar(Z=res$Z,t=c(0.5,0.5),h=0.125)
 }
-\keyword{}

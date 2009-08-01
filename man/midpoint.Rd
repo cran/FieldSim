@@ -47,7 +47,7 @@ R.F. Voss (1985). Random fractal forgeries. NATO ASI Series *F17*, 805-835.
 }
 
 \author{
-  Alexandre Brouste (\url{http://ljk.imag.fr/membres/Alexandre.Brouste})
+  Alexandre Brouste (\url{http://subaru.univ-lemans.fr/sciences/statist/pages_persos/Brouste/})
    and
   Sophie Lambert-Lacroix (\url{http://ljk.imag.fr/membres/Sophie.Lambert}).
 }
@@ -67,4 +67,3 @@ y <- res$Zcol
 z <- res$Z
 persp(x, y, z, theta = 30, phi = 30, expand = 0.5, col = "lightblue")
 }
-\keyword{}
