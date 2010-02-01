@@ -1,2 +1,18 @@
-useDynLib(FieldSim)
-export(fieldsim, midpoint,quadvar,C2D,locquadvar,H.test,spheresim,spheresimgrid,hypersim,hypersimgrid,printsphere,printhyper)
+import("methods")
+
+export( fieldsim,
+	quadvar,
+	constructcovf,
+	constructgrid,
+	visualize,
+	whichgrid,
+	C2D)
+
+exportClasses(manifold)
+export(setManifold)
+
+exportMethods("initialize")
+
+import("rgl")
+import("RColorBrewer")
+
