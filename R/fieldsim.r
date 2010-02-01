@@ -108,7 +108,8 @@ if(Ne<=nbNeighbor){
 		}
 	}
 
-	iso<-apply(matcov==0,2,all)
+	eps=1e-10
+	iso<-apply((matcov<(0+eps))&(matcov>(0-eps)),2,all)
 	whereo<-which(iso)	
 
 	if (any(iso)){
@@ -154,29 +155,34 @@ if(Ne<=nbNeighbor){
 				}
 			}
 			
-			ismato<-apply(Rmat==0,2,all)
+			ismato<-apply((Rmat<(0+eps))&(Rmat>(0-eps)),2,all) 
 			wheremato<-which(ismato)	
 			
-			if (any(ismato)){
-				Rmatbis<-Rmat[-wheremato,-wheremato]
-			}else{
-				Rmatbis<-Rmat
-			}
-			
-			
-			Li=t(chol(Rmatbis))  
-			D=diag(diag(Li))
-			Ld<-dim(D)[2]	
-			Lin=Li%*%solve(D)
-			Linmoins1 = solve(Lin)
-					
-			xvec <- res[Voisins]
-			if (any(ismato)){
+			if (any(wheremato==dmat)){
 				xsim<-0
-			}else{
-				xsim<-D[dmat,dmat]*rnorm(1)-sum(Linmoins1[dmat,1:(dmat-1)]*xvec)
 			}
-				
+			else{
+			
+				if (any(ismato)){
+					Rmatbis<-Rmat[-wheremato,-wheremato]
+					xvec <- res[Voisins[-wheremato]]
+					dmatbis<-dim(Rmatbis)[2]
+				}else{
+					Rmatbis<-Rmat
+					xvec <- res[Voisins]
+					dmatbis<-dmat
+				}
+			
+			
+				Li=t(chol(Rmatbis))  
+				D=diag(diag(Li))
+				Ld<-dim(D)[2]	
+				Lin=Li%*%solve(D)
+				Linmoins1 = solve(Lin)
+					
+				xsim<-D[dmatbis,dmatbis]*rnorm(1)-sum(Linmoins1[dmatbis,1:(dmatbis-1)]*xvec)
+			}
+			
 			res=c(res,xsim)	
 			}
 		}else{}

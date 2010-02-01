@@ -64,8 +64,8 @@ if(missing(Ng)){
 if(!is.numeric(Ng)){
 	cat("Error from constructgrid.R: parameter Ng must be numeric\n")
 	return(NULL)	
-}else if (Ng<=0){
-	cat("Error from constructgrid.R: parameter Ng must be positive\n")
+}else if (Ng<10){
+	cat("Error from constructgrid.R: parameter Ng must be positive and up to 10\n")
 	return(NULL)	
 }else if ((floor(Ng)-Ng)!=0){
 	cat("Error from constructgrid.R: parameter Ng must be an integer\n")	
