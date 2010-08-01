@@ -11,7 +11,9 @@
 \description{The function \code{constructgrid} constructs usual grids on manifold.}
 
 \references{
-A. Brouste, J. Istas and S. Lambert-Lacroix (2010). On simulation of manifold indexed fractional Gaussian fields.}
+A. Brouste, J. Istas and S. Lambert-Lacroix (2010). On Simulation of Manifold Indexed Fractional Gaussian Fields. Journal of Statistical Software, 36(4), 1--14. URL \url{http://www.jstatsoft.org/v36/i04/}.
+}
+
 
 \details{ 
 We list here the different implemented grids. For 

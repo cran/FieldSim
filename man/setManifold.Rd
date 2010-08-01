@@ -11,7 +11,9 @@
 \description{The function sets an object of class manifold.}
 \value{ An object of class manifold with the 4 slots name, atlas, distance and origin.}
 
-\references{A. Brouste, J. Istas and S. Lambert-Lacroix (2010). On simulation of manifold indexed fractional Gaussian fields.}
+\references{
+A. Brouste, J. Istas and S. Lambert-Lacroix (2010). On Simulation of Manifold Indexed Fractional Gaussian Fields. Journal of Statistical Software, 36(4), 1--14. URL \url{http://www.jstatsoft.org/v36/i04/}.
+}
 
 \author{Alexandre Brouste (\url{http://subaru.univ-lemans.fr/sciences/statist/pages_persos/Brouste/}) and
  Sophie Lambert-Lacroix (\url{http://ljk.imag.fr/membres/Sophie.Lambert}).}

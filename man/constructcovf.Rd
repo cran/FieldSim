@@ -11,9 +11,11 @@
 \description{The function \code{constructcovf} constructs the 
 covariance function of usual fractional processes (fBm, mBm).}
 \references{
-A. Brouste, J. Istas and S. Lambert-Lacroix (2007). On Gaussian random 
-fields simulations.
-A. Brouste, J. Istas and S. Lambert-Lacroix (2010). On simulation of manifold indexed fractional Gaussian fields.}
+A. Brouste, J. Istas and S. Lambert-Lacroix (2007). On Fractional Gaussian Random Fields Simulations. Journal of Statistical Software, 23(1), 1-23. URL \url{http://www.jstatsoft.org/v23/i01/}.
+
+
+A. Brouste, J. Istas and S. Lambert-Lacroix (2010). On Simulation of Manifold Indexed Fractional Gaussian Fields. Journal of Statistical Software, 36(4), 1--14. URL \url{http://www.jstatsoft.org/v36/i04/}.
+}
 
 \seealso{\code{\link{fieldsim}}.}
 \author{

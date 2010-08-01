@@ -22,8 +22,11 @@ procedure described in Brouste et al. (2007, 2010).
 
 \value{The function returns the vector of the values of the process on the manifold atlas}
 
-\references{A. Brouste, J. Istas and S. Lambert-Lacroix (2007). On Gaussian random 
-fields simulations. A. Brouste, J. Istas and S. Lambert-Lacroix (2010) On simulation of manifold indexed fractional Gaussian fields. }
+\references{A. Brouste, J. Istas and S. Lambert-Lacroix (2007). On Fractional Gaussian Random Fields Simulations. Journal of Statistical Software, 23(1), 1-23. URL \url{http://www.jstatsoft.org/v23/i01/}.
+
+
+A. Brouste, J. Istas and S. Lambert-Lacroix (2010). On Simulation of Manifold Indexed Fractional Gaussian Fields. Journal of Statistical Software, 36(4), 1--14. URL \url{http://www.jstatsoft.org/v36/i04/}.
+}
 
 \author{Alexandre Brouste (\url{http://subaru.univ-lemans.fr/sciences/statist/pages_persos/Brouste/}) and
  Sophie Lambert-Lacroix (\url{http://ljk.imag.fr/membres/Sophie.Lambert}).}

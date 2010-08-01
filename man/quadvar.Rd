@@ -28,7 +28,7 @@ a real in \eqn{]0,1[} that represents the estimate of the Hurst parameter of the
   }
 
 \references{J. Istas and G. Lang (1997). Quadratic variations and estimation of the local
-Holder index of a Gaussian process. Annales Institut Henri Poincaré *33* 407-436.
+Holder index of a Gaussian process. Annales Institut Henri Poincare, 33, 407-436.
 }
 
 \author{
