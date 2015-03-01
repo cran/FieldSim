@@ -1,17 +1,19 @@
-import("methods")
+export(fieldsim, midpoint, quadvar)
 
-export( fieldsim,
-	quadvar,
-	constructcovf,
-	constructgrid,
-	visualize,
-	whichgrid,
-	C2D)
+exportClasses(manifold,process)
 
-exportClasses(manifold)
-export(setManifold)
+export(setManifold,setProcess)
 
-exportMethods("initialize")
+exportMethods("plot","print","show")
+
+#getteurs class manifold
+#exportMethods("getName", "getAtlas","getDistance","getOrigin")
+
+#setteurs class manifold
+exportMethods("setAtlas","setValues")
+
+import("methods")  #show
+import("graphics") #plot
 
 import("rgl")
 import("RColorBrewer")

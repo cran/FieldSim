@@ -1,5 +1,21 @@
+#################################################################
+#######            Manifold Class                        ########
+#################################################################
+
+## Author: Alexandre Brouste
+
+setClass("manifold" , representation(	
+							name="character",	
+							atlas="matrix",
+                            gridtype="character",
+							distance="function",
+							origin="matrix"))
+
+
+#---- Initialize
+
 setMethod("initialize", "manifold",
-function(.Object, name=NULL, atlas=NULL, distance=NULL, origin=NULL){  
+function(.Object, name=NULL, atlas=NULL, gridtype=NULL, distance=NULL, origin=NULL){
 	
 	if(!is.null(name)){
 		.Object@name <- name
@@ -9,6 +25,10 @@ function(.Object, name=NULL, atlas=NULL, distance=NULL, origin=NULL){
 		.Object@atlas <- atlas
 	}
 	
+    if(!is.null(gridtype)){
+		.Object@gridtype <- gridtype
+	}
+    
 	if(!is.null(distance)){
 		.Object@distance <- distance
 	}
@@ -20,17 +40,7 @@ function(.Object, name=NULL, atlas=NULL, distance=NULL, origin=NULL){
 	return(.Object)
 })
 
-
-#################################################################
-#######                    Fieldsim                      ########
-#################################################################
-
-## setManifold.R  (2006-15)
-##
-##    
-##
-## Copyright 2006-15 Alexandre Brouste et Sophie Lambert-Lacroix
-
+#-I-- setManifold
 
 ##    INPUT VARIABLES
 #################################################################
@@ -41,16 +51,12 @@ function(.Object, name=NULL, atlas=NULL, distance=NULL, origin=NULL){
 #################################################################
 
 
-
 ##    OUTPUT VARIABLES
 #################################################################
 ##   function returns an object manifold  
 #################################################################
 
-
-
-setManifold <-
-function(name, atlas, distance, origin){
+setManifold <-function(name, atlas, gridtype, distance, origin){
 	
 if(missing(name)){ 		
 	cat("Error from setManifold.R: user must name the manifold\n")
@@ -61,116 +67,85 @@ if(!is.character(name)){
 	cat("Error from setManifold.R: name must be a character string\n")
 	return(NULL)
 }else{	
-#The "plane" manifold
+
+
+#The "line" manifold	
+	
+	if(name=="line"){
+		
+		manifoldtmp<-new("manifold",
+						 name=name,
+						 atlas=rbind(0),
+                         gridtype="visualization",
+						 distance=function(xi,xj){return(sqrt(t(xi-xj)%*%(xi-xj)))},
+						 origin=rbind(0))
+		
+		manifoldtmp@atlas<-setAtlas_under(manifoldtmp,"visualization",8)
+		return(manifoldtmp)
+	}
+	
+	
+#The "plane" manifold	
 	
 	if(name=="plane"){
 		
-		Ng<-3
-		mesh<-NULL
-		for (l in 0:1){
-			for (m in 0:1){
-				mesh <- cbind(mesh,rbind(l,m))  #Grille grossière
-			}
-		}
+		manifoldtmp<-new("manifold",
+						 name=name,
+						 atlas=rbind(0,0),
+                         gridtype="visualization",
+						 distance=function(xi,xj){return(sqrt(t(xi-xj)%*%(xi-xj)))},
+						 origin=rbind(0,0))
 		
-		niveau <- 1
-		while (niveau<=Ng){ #parametre qui donne le nombre de rafinement a faire
-			for (m in 1:2^(niveau-1)){ 
-				for (l in 1:2^(niveau-1)) {
-					pc_x<-2*l
-					pc_y<-2*m
-					tr_x<-(pc_x-1)/2^(niveau)
-					tr_y<-(pc_y-1)/2^(niveau)
-					mesh <- cbind(mesh,rbind(tr_x,tr_y))
-					mesh <- cbind(mesh,rbind(tr_x+2^(-niveau),tr_y))
-					mesh <- cbind(mesh,rbind(tr_x,tr_y+2^(-niveau)))
-					if (m==1){mesh <- cbind(mesh,rbind(tr_x,tr_y-2^(-niveau)))}
-					if (l==1){mesh <- cbind(mesh,rbind(tr_x-2^(-niveau),tr_y))}
-				}
-			}
-			niveau<-niveau+1
-		}
-		dimnames(mesh)<-NULL
+		manifoldtmp@atlas<-setAtlas_under(manifoldtmp,"visualization",4)
+		return(manifoldtmp)
 		
-		return(new("manifold",
-			   name=name,
-			   atlas=as.matrix(mesh),
-			   distance=function(xi,xj){return(sqrt(t(xi-xj)%*%(xi-xj)))},
-			   origin=rbind(0,0))
-		)
-
 	}
 	
 #The "sphere" manifold	
 	
 	if(name=="sphere"){
 		
-		eps<-1/4
-		N<-12
-		x<-seq(-1+eps,1-eps,length=N);
-		z<-matrix(0,N,N)
+		manifoldtmp<-new("manifold",
+						 name=name,
+						 atlas=rbind(0,0,0),
+                         gridtype="visualization",
+						 distance=function(xi,xj){ #Distance on the sphere
+						 u <- sum(xi*xj)
+						 if (u<(-1))
+						 u<--1
+						 if (u>1)
+						 u<-1
+						 return(acos(u))},
+						 origin=rbind(1,0,0))
 		
-		for (i in 1:N){
-			for (j in 1:N){
-				suppressWarnings(z[i,j]<-sqrt(1-(x[i]^2+x[j]^2)))
-			}
-		}
+		manifoldtmp@atlas<-setAtlas_under(manifoldtmp,"visualization",10)
+		return(manifoldtmp)
 		
-		W1<-rbind(rep(x,each=N),rep(x,N),as.vector(z))
-		W2<-rbind(rep(x,each=N),rep(x,N),-as.vector(z))
-		W3<-rbind(rep(x,each=N),as.vector(z),rep(x,N))
-		W4<-rbind(rep(x,each=N),-as.vector(z),rep(x,N))
-		W5<-rbind(as.vector(z),rep(x,N),rep(x,each=N))
-		W6<-rbind(-as.vector(z),rep(x,N),rep(x,each=N))
-		
-		atlassphere<-cbind(W1,W2,W3,W4,W5,W6)
-		
-		return(new("manifold",
-				name=name,
-				atlas=atlassphere, 
-				distance=function(xi,xj){ #Distance on the sphere
-				   u <- sum(xi*xj)
-				   if (u<(-1))
-				   u<--1
-				   if (u>1)
-				   u<-1
-				   return(acos(u))},
-				origin=rbind(1,0,0))
-		)
-
 	}
 	
 #The "hyperboloid" manifold
 		
 	if(name=="hyperboloid"){
 		
-		M=3
-		res<-0
-		N<-12
-		x<-seq(-M,M,length=N);
-		z<-matrix(0,N,N)
-		for (i in 1:N){
-			for (j in 1:N){
-				z[i,j]<-sqrt(1+(x[i]^2+x[j]^2))
-			}
-		}	
-		atlashyper<-rbind(rep(x,each=N),rep(x,N),as.vector(z))
+		manifoldtmp<-new("manifold",
+						 name=name,
+						 atlas=rbind(0,0,0),
+                         gridtype="visualization",
+						 distance=function(xi,xj){    #Distance on the hyperboloid
+						 u <- -xi[1]*xj[1]-xi[2]*xj[2]+xi[3]*xj[3]
+						 if (u<1){u<-1}
+						 return(acosh(u))},
+						 origin=rbind(0,0,1))
 		
-		return(new("manifold",
-				name=name,
-				atlas=atlashyper,
-				distance=function(xi,xj){    #Distance on the hyperboloid
-				   u <- -xi[1]*xj[1]-xi[2]*xj[2]+xi[3]*xj[3]
-				   if (u<1){u<-1}
-				   return(acosh(u))},
-				origin=rbind(0,0,1))
-		)
-   }
-   
+		manifoldtmp@atlas<-setAtlas_under(manifoldtmp,"visualization",16)
+		return(manifoldtmp)
+		
+	}
+
+	##To do: "circle", "tore", "cone", "cylindre", "Gl(n)"....	
+
 #Users manifolds
 	
-		
-		
 		if(missing(atlas)){
 			cat("Error from setManifold.R: atlas must be set\n")
 			return(NULL)
@@ -215,12 +190,161 @@ if(!is.character(name)){
 	
 		return(new("manifold", 
 				name=name, 
-				atlas=atlas, 
+				atlas=atlas,
+                gridtype="user",
 				distance=distance, 
 				origin=origin)
 		)
    
    
 }
-      
 }
+
+#-II-- setAtlas
+
+setMethod(f="setAtlas", signature="manifold",
+definition=function(object,gridtype,Ng){
+	
+	nameObject <- deparse (substitute ( object))
+	object@gridtype<-gridtype
+    object@atlas<-setAtlas_under(object,gridtype,Ng)
+	assign (nameObject ,object , envir = parent.frame())
+	return(invisible(1))
+}
+)
+
+
+#-III plot
+
+setMethod(f="plot", signature="manifold",
+definition=function(x,y,...){
+	cat("super")
+}
+)
+
+#-IV-- print and show
+
+setMethod(f="print", signature="manifold",
+definition=function(x,...){
+	cat("super")
+}
+)
+
+setMethod(f="show", signature="manifold",
+definition=function(object){
+	cat("super")
+}
+)
+
+
+
+
+#Getteurs
+
+#setGeneric(name="getName", def=function(object){
+#	standardGeneric("getName")})
+
+#setMethod(f="getName", signature="manifold",
+#definition=function(object){
+#	return(object@name)
+#}
+#)
+
+
+#setGeneric(name="getAtlas", def=function(object){
+#	standardGeneric("getAtlas")})
+
+#setMethod(f="getAtlas", signature="manifold",
+#definition=function(object){
+#	return(object@atlas)
+#}
+#)
+
+#setGeneric(name="getDistance", def=function(object){
+#	standardGeneric("getDistance")})
+
+#setMethod(f="getDistance", signature="manifold",
+#definition=function(object){
+#	return(object@distance)
+#}
+#)
+
+#setGeneric(name="getOrigin", def=function(object){
+#	standardGeneric("getOrigin")})
+
+#setMethod(f="getOrigin", signature="manifold",
+#definition=function(object){
+#	return(object@origin)
+#}
+#)
+
+#setGeneric(name="getGridtype", def=function(object){
+#	standardGeneric("getGridtype")})
+
+#setMethod(f="getGridtype", signature="manifold",
+#definition=function(object){
+#	return(object@gridtype)
+#}
+#)
+
+#Setteurs
+
+
+#----setName
+
+#setGeneric(name="setName<-", def=function(object,value){
+#	standardGeneric("setName<-")})
+
+#etReplaceMethod(f="setName<-", signature="manifold",
+#definition=function(object,value){
+#	object@name<-value
+#	return(object)
+#}
+#)
+
+
+
+
+#----setDistance
+
+#setGeneric(name="setDistance", def=function(object,Distance){
+#	standardGeneric("setDistance")})
+
+#setMethod(f="setDistance", signature="manifold",
+#definition=function(object,Distance){
+	
+#	nameObject <- deparse (substitute ( object ))
+#	object@distance<-Distance
+#	assign (nameObject ,object , envir = parent.frame())
+#	return(invisible(1))
+	
+#}
+#)
+
+#----setOrigin
+
+#setGeneric(name="setOrigin", def=function(object,Origin){
+#	standardGeneric("setOrigin")})
+
+#setMethod(f="setOrigin", signature="manifold",
+#definition=function(object,Origin){
+	
+#	nameObject <- deparse (substitute ( object ))
+#	object@origin<-Origin
+#	assign (nameObject ,object , envir = parent.frame())
+#	return(invisible(1))
+#}
+#)
+
+
+
+
+
+
+
+	
+	
+
+
+
+

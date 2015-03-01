@@ -2,54 +2,54 @@
 \name{fieldsim}
 \alias{fieldsim}
 
-\title{Simulate manifold indexed Gaussian field by the fieldsim method}
+\title{Simulate manifold indexed Gaussian field by the Fieldsim method}
 
-\usage{fieldsim(manifold,R,Ne,nbNeighbor)}
+\usage{fieldsim(process,Ne,nbNeighbor)}
 
 \arguments{
-  \item{manifold}{an S4 object manifold}
-  \item{R}{a covariance function of the Gaussian random field to simulate}
+
+  \item{process}{an S4 object process}
   \item{Ne}{a positive integer corresponding to the number of points to simulate with the accurate simulation step}
-\item{nbNeighbor}{a positive integer (between 1 and 32) corresponding to the number of neighbors to use in the second refined step 
-of the algorithm.}
+\item{nbNeighbor}{a positive integer (between 2 and 32) corresponding to the number of neighbors to use in the second refined step of the algorithm.}
+
 }
 
 \description{
- The function \code{fieldsim} yields discretization of sample path of a 
-manifold indexed Gaussian field following the
-procedure described in Brouste et al. (2007, 2010).
+ The function \code{fieldsim} yields simulation of sample path of a 
+manifold indexed Gaussian field (or bridge) following the
+procedure described in Brouste et al. (2007, 2010, 2014).
 }
 
-\value{The function returns the vector of the values of the process on the manifold atlas}
+\value{The function returns in the slot \code{values} of the object process the values of the process on the manifold atlas}
 
-\references{A. Brouste, J. Istas and S. Lambert-Lacroix (2007). On Fractional Gaussian Random Fields Simulations. Journal of Statistical Software, 23(1), 1-23. URL \url{http://www.jstatsoft.org/v23/i01/}.
+\references{A. Brouste, J. Istas and S. Lambert-Lacroix (2007). On Gaussian random 
+fields simulations. A. Brouste, J. Istas and S. Lambert-Lacroix (2010) On simulation of manifold indexed fractional Gaussian fields. A. Brouste, J. Istas and S. Lambert-Lacroix (2014) Fractional Gaussian bridges with the package \code{FieldSim}.}
 
+\author{Alexandre Brouste (\url{http://perso.univ-lemans.fr/~abrouste/}) and
+ Sophie Lambert-Lacroix (\url{http://membres-timc.imag.fr/Sophie.Lambert/}).}
 
-A. Brouste, J. Istas and S. Lambert-Lacroix (2010). On Simulation of Manifold Indexed Fractional Gaussian Fields. Journal of Statistical Software, 36(4), 1--14. URL \url{http://www.jstatsoft.org/v36/i04/}.
-}
-
-\author{Alexandre Brouste (\url{http://subaru.univ-lemans.fr/sciences/statist/pages_persos/Brouste/}) and
- Sophie Lambert-Lacroix (\url{http://ljk.imag.fr/membres/Sophie.Lambert}).}
-
-\seealso{\code{\link{quadvar}},\code{\link{manifold-class}}}
+\seealso{\code{\link{process-class}}, \code{\link{setProcess}}.}
 
 \examples{
 # Load FieldSim library
 library(FieldSim)
 
+# Fractional Brownian field on [0,1]^2
+plane.fBm<-setProcess("fBm-plane",0.7)
+str(plane.fBm)
+fieldsim(plane.fBm)
+plot(plane.fBm)
+
 # Sphere indexed fractional Brownian field
+#sphere.fBm<-setProcess("fBm-sphere",0.3)
+#fieldsim(sphere.fBm)
+#plot(sphere.fBm)
 
-sphere<-setManifold("sphere")
-R.S.1 <- constructcovf(sphere, "fBm", H = 0.4)
+# Bridge associated to the Fractional Brownian field on [0,1]^2
+#Gamma<-matrix(c(1,0,0,0,1,1,1,1,1,1/2,1/2,0.5),3,4)
+#bridge.plane.fBm<-setProcess("bridge-fBm-plane",list(Gamma=Gamma,par=0.9))
+#fieldsim(bridge.plane.fBm)
+#plot(bridge.plane.fBm)
 
-S.u <- constructgrid(sphere, "random", 10)
-S.g <- constructgrid(sphere, "visualization", 12)
-simulationgrid<-cbind(S.u,S.g)
-sphere@atlas <- simulationgrid
-
-resS <- fieldsim(sphere, R.S.1, Ne = 80, nbNeighbor = 15)
-
-sphere@atlas<-S.g
-res<-resS[(dim(S.u)[2]+1):length(resS)]
-visualize(sphere,resS)
+# Other examples can be found in the setProcess documentation.
 }

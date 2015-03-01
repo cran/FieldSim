@@ -2,63 +2,57 @@
 #######                    Fieldsim                      ########
 #################################################################
 
-## fieldsim.R  (2006-15)
+## fieldsim.R  (2006-16)
 ##
-##    Random field simulation by the method FieldSim method
+##    Random field simulation by the FieldSim method
 ##
-## Copyright 2006-15 Alexandre Brouste and Sophie Lambert-Lacroix
+## Copyright 2006-16 Alexandre Brouste and Sophie Lambert-Lacroix
 
 
 ##    INPUT VARIABLES
 #################################################################
-##	manifold	: manifold (R manifold object)
-##  R			: covariance function (R function)
+##	process     : process (R process object)
 ##  Ne          : number of points to be simulated with the exact
 ##                method
 ##  nbNeighbor  : number of neighbors to be considered in the 
 ##                fieldsim method
 #################################################################
 
-
-
 ##    OUTPUT VARIABLES
 #################################################################
-## function returns the value of the process of covariance R on
-## the atlas of the manifold with the FieldSim method
+## function returns the value of the process in the corresponding
+## slot of the process object with the FieldSim method
 #################################################################
 
-fieldsim <-function(manifold,R,Ne,nbNeighbor=4){
+fieldsim <-function(process,Ne,nbNeighbor=4){
 	
 #-----------------Tests on input variables-----------------------
 		
-if(missing(manifold)){ 		
-	cat("Error from fieldsim.R: parameter manifold is missing\n")
+if(missing(process)){ 		
+	cat("Error from fieldsim.R: parameter process is missing\n")
 	return(NULL)
 }	
 	
-if(!isS4(manifold)){ 
-	cat("Error from fieldsim.R: parameter manifold is not of type manifold\n")
+if(!isS4(process)){ 
+	cat("Error from fieldsim.R: parameter process is not of type process\n")
 	return(NULL)
-}else if(!class(manifold)[1]=="manifold"){
-	cat("Error from fieldsim.R: parameter manifold is not of type manifold\n")
+}else if(!(class(process)[1]=="process")){
+	cat("Error from fieldsim.R: parameter process is not of type process\n")
 	return(NULL)
 }
+
+manifold<-process@manifold
+R<-process@covf	
+parameter<-process@parameter
 	
 mesh<-manifold@atlas	
-	
-
-if (!is.function(R)){
-	cat("Error from fieldsim.R: parameter R is not of function type\n")
-	return(NULL)
-}
-
-
 dimen<-dim(mesh)[1]
 		
 #Traitement des NaN
 		
 meshnan<-is.nan(mesh)
 indexNan<-meshnan[1,]
+	
 for (i in 1:dimen){ 
 	indexNan<-indexNan|meshnan[i,]
 }
@@ -96,9 +90,14 @@ if(Ne<=nbNeighbor){
 	cat("Error from fieldsim.R: Ne must be bigger than nbNeighbor\n")
 	return(NULL)
 }	
-	
 
-	
+if((nbNeighbor<2)|(nbNeighbor>32)){
+	cat("Error from fieldsim.R: nbNeighbor must belong to {1,...,32}\n")
+	return(NULL)
+}
+
+
+
 	matcov<-matrix(0,Ne,Ne)
 		
 	for(i in 1:Ne){
@@ -119,7 +118,7 @@ if(Ne<=nbNeighbor){
 		matcovbis<-matcov
 		Nbis<-Ne
 	}
-			
+    
 	L <-matrix(0,Nbis,Nbis)	
 	L <- chol(matcovbis)
 	Z <- rnorm(Nbis)
@@ -188,11 +187,50 @@ if(Ne<=nbNeighbor){
 		}else{}
 	
 	
+#restmp<-rep(NaN,Ntmp)
+#restmp[!indexNan]<-res
+#res<-restmp
+	
+	
+    if (process@name=="bridge"){
+		
+		Gamma<-parameter$Gamma
+		M<-dim(Gamma)[2]
+		Rbis<-parameter$R
+		Tp<-matrix(parameter$Tp,M,M)
+		
+		#x<-meshtmp
+		x<-mesh
+		
+		taille<-dim(Gamma)[1]
+		Gammavalue<-matrix(Gamma[taille,],M,1)
+        
+        
+        Sigmatmp<- Tp %*% Gammavalue
+        
+		if (is.null(Gammavalue)){}
+		else{
+            
+            for (l in 1:N){
+                
+                Qtmp<-matrix(0,1,M)
+                for (j in 1:M){
+                    Qtmp[1,j]<-Rbis(x[,l],Gamma[1:(taille-1),j])
+                }
+                
+                res[l]<-res[l]+Qtmp%*%Sigmatmp
+                
+            }}}
 	
 	restmp<-rep(NaN,Ntmp)
 	restmp[!indexNan]<-res
-	res<-restmp	
-	return(res)
+	res<-restmp
+    
+	
+	nameProcess<-deparse(substitute(process))
+	process@values<-res
+	assign (nameProcess,process,envir = parent.frame())
+	return(invisible(1))
 }
 
 

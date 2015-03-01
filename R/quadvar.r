@@ -1,30 +1,16 @@
-### quadvar.R  (2006-10)
+### quadvar.R  (2006-16)
 ###
 ###    Estimation of the Hurst parameter of the fractal Brownian field
 ###             by the quadratic variations method
 ###
-### Copyright 2006-10 Alexandre Brouste and Sophie Lambert-Lacroix
+### Copyright 2006-16 Alexandre Brouste and Sophie Lambert-Lacroix
 ###
-###
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
 
-quadvar <- function(manifold,res){
+quadvar <- function(process,parameter){
 
 ##    INPUT VARIABLES
 #########################
-##  manifold  : manifold
-##  res       : vector of length N constitued of the simulated field
-
+##  process   : an object of class process
 
 ##    OUTPUT VARIABLES
 ##########################
@@ -34,39 +20,35 @@ quadvar <- function(manifold,res){
 ##  TEST ON INPUT VARIABLES
 ##############################
 
-if(missing(manifold)){ 		
-	cat("Error from quadvar.R: parameter manifold is missing\n")
+if(missing(process)){
+	cat("Error from quadvar.R: parameter process is missing\n")
 	return(NULL)
 }	
 	
-if(!isS4(manifold)){ 
-	cat("Error from quadvar.R: parameter manifold is not of type manifold\n")
+if(!isS4(process)){
+	cat("Error from quadvar.R: parameter process is not of type process\n")
 	return(NULL)
-}else if(!class(manifold)[1]=="manifold"){
-	cat("Error from quadvar.R: parameter manifold is not of type manifold\n")
-	return(NULL)
-}		
-	
-
-if(missing(manifold)){ 		
-	cat("Error from quadvar.R: parameter res is missing\n")
+}else if(!class(process)[1]=="process"){
+	cat("Error from quadvar.R: parameter process is not of type process\n")
 	return(NULL)
 }		
-		
-if (!is.vector(res)){
-	cat("Error from quadvar.R: res is not of valid type")
-	return(NULL)
-}
 
-	
-nameofgrid<-whichgrid(manifold)	
+name<-process@name
+manifold<-process@manifold
+nameofgrid<-whichgrid(manifold)
+
+if (name=="fBm"){
+
+#Test on Values (to do)
+
+res<-process@values
 
 if (manifold@name=="plane"){	
 	
 	if (nameofgrid=="regular"){
 		
 		N<-sqrt(length(res))
-		Z<-as.matrix(res,N,N)
+		Z<-matrix(res,N,N)
 		
 		
 	}else if(nameofgrid=="visualization"){
@@ -139,10 +121,48 @@ if (manifold@name=="plane"){
 	H <- log(V2[2]/V2[1])/(2*log(2))+1
 	return(H)
 	
+}else if (manifold@name=="line"){
+    cat("Error from quadvar.R: no estimator have been implemented for this process for the moment")
+	return(NULL)
+    
 }else{
-	cat("Error from quadvar.R: no estimator have been implemented for this manifold")	
+	cat("Error from quadvar.R: no estimator have been implemented for this process")
 	return(NULL)	
 }
-	
+
+
+}else if(name=="mBm"){
+    
+    if (manifold@name=="plane"){
+       
+        res<-process@values
+        N<-sqrt(length(res))
+		Z<-matrix(res,N,N)
+        
+        #Test missing parameter
+        # test a faire sur h et la taille de la grille (h ne doit pas etre plus petit que la grille)
+        
+        
+        tt<-parameter$point
+        hh<-parameter$h
+        return(locquadvar(Z,tt,hh))
+        
+    }else if (manifold@name=="line"){
+        cat("Error from quadvar.R: no estimator have been implemented for this process for the moment")
+        return(NULL)
+    }else{
+        cat("Error from quadvar.R: no estimator have been implemented for this process")
+        return(NULL)
+        
+    }
+    
+    
+
+}else{
+    
+    cat("Error from quadvar.R: no estimator have been implemented for this process")
+	return(NULL)
+    
+}
 
 }

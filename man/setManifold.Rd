@@ -1,24 +1,27 @@
 \encoding{latin1}
 \name{setManifold}
 \alias{setManifold}
+
 \title{Set a S4 manifold object}
-\usage{setManifold(name,atlas,distance,origin)}
+
+\usage{setManifold(name,atlas,gridtype,distance,origin)}
+
 \arguments{
   \item{name}{name of the manifold (type character);}
   \item{atlas}{atlas of the manifold (type matrix);}
+  \item{gridtype}{is the  grid type (a character string) to plotting;}
   \item{distance}{distance on the manifold (type function);}
-  \item{origin}{origin of the manifold (type matrix).}}
-\description{The function sets an object of class manifold.}
-\value{ An object of class manifold with the 4 slots name, atlas, distance and origin.}
-
-\references{
-A. Brouste, J. Istas and S. Lambert-Lacroix (2010). On Simulation of Manifold Indexed Fractional Gaussian Fields. Journal of Statistical Software, 36(4), 1--14. URL \url{http://www.jstatsoft.org/v36/i04/}.
+  \item{origin}{origin of the manifold (type matrix).}
 }
 
-\author{Alexandre Brouste (\url{http://subaru.univ-lemans.fr/sciences/statist/pages_persos/Brouste/}) and
- Sophie Lambert-Lacroix (\url{http://ljk.imag.fr/membres/Sophie.Lambert}).}
+\description{The function sets an object of class manifold.}
+\value{ An object of class manifold with the 5 slots name, atlas, gridtype, distance and origin.}
 
-\seealso{\code{\link{constructgrid}}, \code{\link{constructcovf}}, \code{\link{fieldsim}}, \code{\link{visualize}}}
+\references{A. Brouste, J. Istas and S. Lambert-Lacroix (2010). On simulation of manifold indexed fractional Gaussian fields.}
+
+\author{Alexandre Brouste (\url{http://perso.univ-lemans.fr/~abrouste/}) and Sophie Lambert-Lacroix (\url{http://membres-timc.imag.fr/Sophie.Lambert/}).}
+
+\seealso{\code{\link{setProcess}}.}
 
 
 \examples{
@@ -34,15 +37,19 @@ origin1<-rbind(0,0)
 manifold1<-setManifold(name=name1, atlas=atlas1, distance=d1, origin=origin1)
 str(manifold1)
 
-#Example 2: The "plane" manifold
+#Example 2: The "line" manifold
+line<-setManifold("line")
+str(line)
+
+#Example 3: The "plane" manifold
 plane<-setManifold("plane")
 str(plane)
 
-#Example 3: The "sphere" manifold
+#Example 4: The "sphere" manifold
 sphere<-setManifold("sphere")
 str(sphere)
 
-#Example 4: The "hyperboloid" manifold
+#Example 5: The "hyperboloid" manifold
 hyper<-setManifold("hyperboloid")
 str(hyper)
 }

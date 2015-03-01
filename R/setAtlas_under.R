@@ -2,7 +2,7 @@
 #######                    Fieldsim                      ########
 #################################################################
 
-## constructgrid.R  (2006-15)
+## setAtlas_under.R  (2006-15)
 ##
 ##    
 ##
@@ -26,18 +26,18 @@
 #--- Simulation procedure 
 
 
-constructgrid<-function(manifold,typegrid,Ng){ 
+setAtlas_under<-function(manifold,typegrid,Ng){
 
 if(missing(manifold)){ 		
-	cat("Error from constructgrid.R: parameter manifold is missing\n")
+	cat("Error from setAtlas.R: parameter manifold is missing\n")
 	return(NULL)
 }	
 	
 if(!isS4(manifold)){ 
-	cat("Error from constructgrid.R: parameter manifold is not of type manifold\n")
+	cat("Error from setAtlas.R: parameter manifold is not of type manifold\n")
 	return(NULL)
 }else if(!class(manifold)[1]=="manifold"){
-	cat("Error from constructgrid.R: parameter manifold is not of type manifold\n")
+	cat("Error from setAtlas.R: parameter manifold is not of type manifold\n")
 	return(NULL)
 }
 	
@@ -46,43 +46,76 @@ namesgrid=c("regular","random","visualization","finer")
 	
 	
 if(missing(typegrid)){ 		
-	cat("Warning from constructgrid.R: parameter typegrid is missing, it had been set to visualization\n")
+	cat("Warning from setAtlas.R: parameter typegrid is missing, it had been set to visualization\n")
 	typegrid<-"visualization"
 }		
 	
 if(all(typegrid!=namesgrid)){
-	cat("Error from constructgrid.R: parameter typegrid does not exist\n")
+	cat("Error from setAtlas.R: parameter typegrid does not exist\n")
 	return(NULL)
 }		
 	
 if(missing(Ng)){ 		
-	cat("Error from constructgrid.R: parameter Ng is missing\n")
+	cat("Error from setAtlas.R: parameter Ng is missing\n")
 	return(NULL)
 }	
 	
 
 if(!is.numeric(Ng)){
-	cat("Error from constructgrid.R: parameter Ng must be numeric\n")
+	cat("Error from setAtlas.R: parameter Ng must be numeric\n")
 	return(NULL)	
-}else if (Ng<10){
-	cat("Error from constructgrid.R: parameter Ng must be positive and up to 10\n")
+}else if (Ng<=0){
+	cat("Error from setAtlas.R: parameter Ng must be positive\n")
 	return(NULL)	
 }else if ((floor(Ng)-Ng)!=0){
-	cat("Error from constructgrid.R: parameter Ng must be an integer\n")	
+	cat("Error from setAtlas.R: parameter Ng must be an integer\n")	
 }
 
-if((typegrid=="finer"|typegrid=="finer")&(name=="plane")&(Ng>16)){
-	cat("Error from constructgrid.R: parameter Ng must be less than 15 in the plane finer/visualization case\n")
+if((typegrid=="visualization"|typegrid=="finer")&(name=="plane")&(Ng>16)){
+	cat("Error from setAtlas.R: parameter Ng must be less than 15 in the plane finer/visualization case\n")
 	return(NULL)				
 }
 	
 	
-namesmanifold=c("plane","sphere","hyperboloid")
+namesmanifold=c("line","plane","sphere","hyperboloid")
 	
 if(all(name!=namesmanifold)){
-	cat("Error from constructgrid.R: no grid can be constructed for this manifold\n")
+	cat("Error from setAtlas.R: no grid can be constructed for this manifold\n")
 	return(NULL)	
 }
+	
+	
+	
+if (name=="line"){
+	if (typegrid=="regular"){
+		
+		return(t(seq(from=0,to=1,length=Ng)))
+	
+	}else if(typegrid=="finer"|typegrid=="visualization"){
+		
+        mesh<-matrix(c(0,1),1,2)
+        niveau <- 1
+		while (niveau<=Ng){
+            for (m in 1:2^(niveau-1)){
+                 pc_y<-2*m
+                 tr_y<-(pc_y-1)/2^(niveau)
+                 mesh <- cbind(mesh,tr_y)
+            }
+            niveau<-niveau+1
+		}
+		
+		attributes(mesh)<-list(dim=c(1,2^Ng+1),dimnames=NULL)
+		return(mesh)
+        
+        
+	}else{
+		#to do with other alea
+		return(t(runif(Ng,0,1)))
+	
+	}
+}	
+	
+	
 	
 #The plane manifold
 	
@@ -98,7 +131,7 @@ if (name=="plane"){
 		mesh<-NULL
 		for (l in 0:1){
 			for (m in 0:1){
-				mesh <- cbind(mesh,rbind(l,m))  #Grille grossière
+				mesh <- cbind(mesh,rbind(l,m))  #Big Grid
 			}
 		}
 		
@@ -120,7 +153,7 @@ if (name=="plane"){
 		niveau<-niveau+1
 		}
 		
-		dimnames(mesh)[[1]]<-NULL
+		attributes(mesh)<-list(dim=c(2,(2^Ng+1)^2),dimnames=NULL)
 		return(mesh)
 		
 	
@@ -136,7 +169,7 @@ if (name=="plane"){
 if (name=="hyperboloid"){
 	
 	if (typegrid=="regular"|typegrid=="finer"){
-		cat("Error from constructgrid.R: there is no regular/finer discretization of the hyperboloid\n")
+		cat("Error from setAtlas.R: there is no regular/finer discretization of the hyperboloid\n")
 		return(NULL)
 	}
 	
@@ -168,7 +201,7 @@ if (name=="hyperboloid"){
 if (name=="sphere"){
 	
 	if (typegrid=="regular"|typegrid=="finer"){
-		cat("Error from constructgrid.R: there is no regular discretization of the sphere\n")
+		cat("Error from setAtlas.R: there is no regular discretization of the sphere\n")
 		return(NULL)
 	}
 	
@@ -198,6 +231,13 @@ if (name=="sphere"){
 		W5<-rbind(as.vector(z),rep(x,N),rep(x,each=N))
 		W6<-rbind(-as.vector(z),rep(x,N),rep(x,each=N))
 	
+#		W1<-rbind(rep(x,N),rep(x,each=N),as.vector(z))
+#		W2<-rbind(-rep(x,N),-rep(x,each=N),-as.vector(z))
+#		W3<-rbind(rep(x,N),as.vector(z),rep(x,each=N))
+#		W4<-rbind(-rep(x,N),-as.vector(z),-rep(x,each=N))
+#		W5<-rbind(as.vector(z),rep(x,each=N),rep(x,N))
+#		W6<-rbind(-as.vector(z),-rep(x,each=N),-rep(x,N))
+		
 		return(cbind(W1,W2,W3,W4,W5,W6))
 			  
 			  
@@ -244,7 +284,13 @@ if (manifold@name=="hyperboloid"){
 
 	   
 }	   
-	   
+
+if (manifold@name=="line"){
+    # to do.... surtout rajouter un slot a atlas  
+return("visualization")
+}
+
+
 if (manifold@name=="plane"){
 	
 	if(floor(sqrt(N))-sqrt(N)!=0){

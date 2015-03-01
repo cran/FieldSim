@@ -4,12 +4,12 @@
 
 \title{Estimate the Hurst parameter of a plane indexed fractional Brownian field by the quadratic variations method}
 \usage{
-quadvar(manifold,res)
+quadvar(process,parameter)
 }
 
 \arguments{
-  \item{manifold}{a S4 object manifold.}
-  \item{res}{sample path of the field on the manifold atlas}
+  \item{process}{a S4 object process;}
+  \item{parameter}{parameter (in progress).}
 }
 
 \description{
@@ -28,25 +28,26 @@ a real in \eqn{]0,1[} that represents the estimate of the Hurst parameter of the
   }
 
 \references{J. Istas and G. Lang (1997). Quadratic variations and estimation of the local
-Holder index of a Gaussian process. Annales Institut Henri Poincare, 33, 407-436.
+Holder index of a Gaussian process. Annales Institut Henri Poincare, 33,407-436.
 }
 
-\author{
-  Alexandre Brouste (\url{http://subaru.univ-lemans.fr/sciences/statist/pages_persos/Brouste/})
-   and
-  Sophie Lambert-Lacroix (\url{http://ljk.imag.fr/membres/Sophie.Lambert}).
-}
+\author{Alexandre Brouste (\url{http://perso.univ-lemans.fr/~abrouste/}) and
+ Sophie Lambert-Lacroix (\url{http://membres-timc.imag.fr/Sophie.Lambert/}).}
 
-\seealso{\code{\link{fieldsim}}.}
+\seealso{\code{\link{fieldsim}}, \code{\link{setProcess}}, \code{\link{setValues}}.}
 
 \examples{
 # load FieldSim library
 library(FieldSim)
 
-plane<-setManifold("plane")
-R<-constructcovf(plane,"fBm", H=0.4)
-res<-fieldsim(plane,R,Ne=80,nbNeighbor=15)
+# Simulated Fractional Brownian field on [0,1]^2
+plane.fBm<-setProcess("fBm-plane",0.7)
+fieldsim(plane.fBm)
+quadvar(plane.fBm)
 
-quadvar(plane,res)
-
+# Simulated Multifractional Brownian field on [0,1]^2
+funcH<-function(xi){0.3+xi[1]*0.6}
+plane.mBm<-setProcess("mBm-plane",funcH)
+fieldsim(plane.mBm)
+quadvar(plane.mBm,parameter=list(point=c(0.5,0.5),h=0.2))
 }
